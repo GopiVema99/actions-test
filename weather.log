@@ -1,0 +1,7 @@
+2025-08-02 23:01:28,758 - INFO - Starting weather fetch for Sydney
+2025-08-02 23:01:28,760 - INFO - Sending request to: http://api.weatherapi.com/v1/current.json?key=7c863a32153d41a9841125931250208 &q=Sydney&aqi=no
+2025-08-02 23:01:29,527 - INFO - Weather in Sydney: 15.0°C, Condition: Partly cloudy
+2025-08-02 23:02:23,492 - INFO - Starting weather fetch for Sydney
+2025-08-02 23:02:23,492 - INFO - Sending request to: http://api.weatherapi.com/v1/current.json?key=7c863a32153d41a9841125931250208 &q=Sydney&aqi=no
+2025-08-02 23:02:23,985 - INFO - Weather in Sydney: 15.0°C, Condition: Partly cloudy
+2025-08-02 23:02:23,986 - INFO - Weather fetch complete

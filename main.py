@@ -1,34 +1,36 @@
 import logging
-import logging.handlers
+import requests
 import os
 
-import requests
-
-logger = logging.getLogger(__name__)
+# Set up logger
+logger = logging.getLogger("WeatherLogger")
 logger.setLevel(logging.DEBUG)
-logger_file_handler = logging.handlers.RotatingFileHandler(
-    "status.log",
-    maxBytes=1024 * 1024,
-    backupCount=1,
-    encoding="utf8",
-)
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-logger_file_handler.setFormatter(formatter)
-logger.addHandler(logger_file_handler)
 
-try:
-    SOME_SECRET = os.environ["SOME_SECRET"]
-except KeyError:
-    SOME_SECRET = "Token not available!"
-    #logger.info("Token not available!")
-    #raise
+file_handler = logging.FileHandler("weather.log", encoding="utf8")
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
+# Get API key from environment or hardcode it (not recommended for production)
+API_KEY = os.environ.get("WEATHER_API_KEY", "7c863a32153d41a9841125931250208 ")
+CITY = "Sydney"
+COUNTRY = "Australia"
+
+def get_weather(api_key, city):
+    url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}&aqi=no"
+    logger.info(f"Sending request to: {url}")
+    
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        logger.info(f"Weather in {city}: {data['current']['temp_c']}°C, Condition: {data['current']['condition']['text']}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error fetching weather data: {e}")
+    except KeyError as e:
+        logger.error(f"Unexpected response structure: {e}")
 
 if __name__ == "__main__":
-    logger.info(f"Token value: {SOME_SECRET}")
-
-    r = requests.get('https://weather.talkpython.fm/api/weather/?city=Berlin&country=DE')
-    if r.status_code == 200:
-        data = r.json()
-        temperature = data["forecast"]["temp"]
-        logger.info(f'Weather in Berlin: {temperature}')
+    logger.info(f"Starting weather fetch for {CITY}")
+    get_weather(API_KEY, CITY)
+    logger.info("Weather fetch complete")
